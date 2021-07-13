@@ -15,13 +15,16 @@
 
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans.xsd">
 
-	<!--
-		Example Data POJO
 
-	<bean class="yemptypackage.data.MyPojo">
-		<property name="id" type="String"/>
-		<property name="flag" type="boolean"/>
-	</bean>
-	-->
+    <bean class="org.questions.data.QuestionData">
+        <property name="question" type="String"/>
+        <property name="questionCustomerName" type="String"/>
+        <property name="answer" type="String"/>
+        <property name="answerCustomerName" type="String"/>
+    </bean>
+
+    <bean class="org.questions.data.ProductData">
+        <property name="questions" type="java.util.List&lt;org.questions.data.QuestionData>"/>
+    </bean>
 
 </beans>
