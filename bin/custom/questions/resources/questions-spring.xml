@@ -72,4 +72,23 @@
     <alias name="defaultProductWithQuestionsFacade" alias="productWithQuestionsFacade"/>
     <bean id="defaultProductWithQuestionsFacade" class="org.questions.facades.DefaultProductWithQuestionsFacade"/>
 
+    <bean id="productQuestionCountProvider" class="org.questions.search.solrfacetsearch.provider.impl.ProductQuestionCountProvider"
+          parent="abstractPropertyFieldValueProvider">
+        <property name="fieldNameProvider" ref="solrFieldNameProvider"/>
+    </bean>
+
+    <bean id="productQuestionCountPopulator" class="org.questions.populators.ProductQuestionCountPopulator"/>
+
+    <bean id="searchResultProductQuestionCountPopulator" class="org.questions.populators.SearchResultProductQuestionCountPopulator"/>
+
+    <bean parent="modifyPopulatorList">
+        <property name="list" ref="productConverter"/>
+        <property name="add"  ref="productQuestionCountPopulator"/>
+    </bean>
+
+    <bean parent="modifyPopulatorList">
+        <property name="list" ref="commerceSearchResultProductConverter"/>
+        <property name="add"  ref="searchResultProductQuestionCountPopulator"/>
+    </bean>
+
 </beans>
