@@ -91,4 +91,6 @@
         <property name="add"  ref="searchResultProductQuestionCountPopulator"/>
     </bean>
 
+    <bean id="questionCountValueResolver" class="org.questions.search.solrfacetsearch.resolver.impl.QuestionCountValueResolver"/>
+
 </beans>
