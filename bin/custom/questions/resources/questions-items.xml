@@ -59,7 +59,6 @@
                   jaloclass="org.questions.jalo.components.QuestionsCMSComponent">
             <description>It shows customer questions about product.</description>
             <attributes>
-
                 <attribute qualifier="numberOfQuestionsToShow" type="java.lang.Integer">
                     <persistence type="property"/>
                     <modifiers optional="false"/>
@@ -69,6 +68,16 @@
                     <persistence type="property"/>
                     <modifiers optional="false"/>
                     <defaultvalue>14</defaultvalue>
+                </attribute>
+            </attributes>
+        </itemtype>
+
+        <itemtype code="Customer" generate="false" autocreate="false">
+            <attributes>
+                <attribute qualifier="internal" type="java.lang.Boolean">
+                    <defaultvalue>Boolean.FALSE</defaultvalue>
+                    <persistence type="dynamic" attributeHandler="internalCustomerAttributeHandler"/>
+                    <modifiers read="true" write="false"/>
                 </attribute>
             </attributes>
         </itemtype>

@@ -61,5 +61,6 @@
     <extension name='textfieldconfiguratortemplateatddtests' />
     <extension name='pcmbackofficesamplesaddon' />
     <extension name='questions'/>
+    <extension name='assistedserviceservices'/>
   </extensions>
 </hybrisconfig>

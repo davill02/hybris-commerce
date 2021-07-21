@@ -93,4 +93,19 @@
 
     <bean id="questionCountValueResolver" class="org.questions.search.solrfacetsearch.resolver.impl.QuestionCountValueResolver"/>
 
+    <bean id="internalCustomerAttributeHandler" class="org.questions.dynamicattribute.handlers.InternalCustomerDynamicAttributeHandler"/>
+
+    <bean id="internalCustomerPrepareInterceptor" class="org.questions.interceptors.AddToInternalGroupPrepareInterceptor">
+        <property name="userGroupDao" ref="userGroupDao"/>
+    </bean>
+
+    <bean id="internalCustomersPrepareInterceptorMapping" class="de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping">
+        <property name="interceptor" ref="internalCustomerPrepareInterceptor"/>
+        <property name="typeCode" value="Customer"/>
+    </bean>
+
+    <bean id="questionCustomSetup" class="org.questions.setup.QuestionsCustomSetup">
+        <property name="importService" ref="importService"/>
+     </bean>
+
 </beans>
