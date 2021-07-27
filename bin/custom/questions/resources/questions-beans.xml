@@ -27,4 +27,15 @@
         <property name="questions" type="java.util.List&lt;org.questions.data.QuestionData>"/>
     </bean>
 
+    <bean class="org.questions.data.EmailQuestionData">
+        <property name="productCode" type="String"/>
+        <property name="questionCode" type="String"/>
+        <property name="question" type="String"/>
+        <property name="answer" type="String"/>
+    </bean>
+
+    <bean class="org.questions.data.EmailQuestionsData">
+        <property name="questions" type="java.util.List&lt;org.questions.data.EmailQuestionData>"/>
+    </bean>
+
 </beans>

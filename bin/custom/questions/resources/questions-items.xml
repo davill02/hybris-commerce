@@ -82,5 +82,35 @@
             </attributes>
         </itemtype>
 
+        <itemtype code="SendEmailWithNewQuestionsCronJob" autocreate="true" generate="true" extends="CronJob">
+            <attributes>
+                <attribute qualifier="lastExecutionTime" type="java.util.Date">
+                    <persistence type="property"/>
+                    <modifiers write="true" read="true" optional="false"/>
+                    <defaultvalue>new java.util.Date(0)</defaultvalue>
+                </attribute>
+                <attribute qualifier="baseSite" type="BaseSite">
+                    <persistence type="property"/>
+                </attribute>
+                <attribute qualifier="email" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers read="true" write="true"/>
+                </attribute>
+            </attributes>
+        </itemtype>
+
+        <itemtype code="SendQuestionEmailProcess" generate="true"
+                  jaloclass="org.questions.processengine.SendQuestionEmailProcess" autocreate="true"
+                  extends="StoreFrontCustomerProcess">
+            <attributes>
+                <attribute qualifier="email" type="java.lang.String">
+                    <persistence type="property"/>
+                </attribute>
+                <attribute qualifier="dateBound" type="java.util.Date">
+                    <persistence type="property"/>
+                </attribute>
+            </attributes>
+        </itemtype>
+
     </itemtypes>
 </items>

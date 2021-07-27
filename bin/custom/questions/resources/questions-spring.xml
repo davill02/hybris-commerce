@@ -108,4 +108,27 @@
         <property name="importService" ref="importService"/>
      </bean>
 
+    <alias name="defaultQuestionDao" alias="questionDao"/>
+    <bean id="defaultQuestionDao" class="org.questions.dao.impl.DefaultQuestionDao"/>
+
+    <alias name="defaultQuestionService" alias="questionService"/>
+    <bean id="defaultQuestionService" class="org.questions.service.impl.DefaultQuestionService"/>
+
+    <alias name="defaultQuestionFacade" alias="questionFacade"/>
+    <bean id="defaultQuestionFacade" class="org.questions.facades.DefaultQuestionFacade"/>
+
+    <bean id="sendEmailWithQuestionsJob" class="org.questions.servicejobs.SendEmailWithQuestionsJob" parent="abstractJobPerformable" />
+
+    <import resource="/questions/process/send-question-email-process-spring.xml"/>
+
+    <bean id="emailQuestionSendingProcessDefinitionResource" class="de.hybris.platform.processengine.definition.ProcessDefinitionResource" >
+        <property name="resource" value="classpath:/questions/process/send-question-email-process.xml"/>
+    </bean>
+
+    <bean id="questionsSendEmailContext" class="org.questions.facades.process.email.context.QuestionsSendEmailContext" parent="abstractEmailContext" scope="prototype"/>
+
+    <bean id="generateQuestionsSendEmail" parent="abstractGenerateEmailAction">
+        <property name="frontendTemplateName" value="QuestionsSendEmailTemplate"/>
+    </bean>
+
 </beans>
