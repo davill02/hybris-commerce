@@ -60,5 +60,8 @@
     <extension name='promotionengineatddtests' />
     <extension name='textfieldconfiguratortemplateatddtests' />
     <extension name='pcmbackofficesamplesaddon' />
+    <extension name='questions'/>
+    <extension name='assistedserviceservices'/>
+    <extension name="backofficequestionaddon"/>
   </extensions>
 </hybrisconfig>

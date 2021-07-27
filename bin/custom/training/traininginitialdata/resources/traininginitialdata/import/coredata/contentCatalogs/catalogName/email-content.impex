@@ -11,16 +11,25 @@
 #
 # Import the CMS content for the site emails
 #
-$contentCatalog=__CONTENT_CATALOG_NAME__
+$lang=en
+$jarResourceCmsValue=jar:org.training.core.setup.CoreSystemSetup&/trainingcore/import/cockpits/cmscockpit
+$jarResource=jar:org.training.core.setup.CoreSystemSetup&/trainingcore/import/common/
+$emailResourceValue=jar:org.training.core.setup.CoreSystemSetup&/trainingcore/import/emails
+$emailContextPackageName=org.training.facades.process.email.context
+
+$contentCatalog=apparel-ukContentCatalog
 $contentCV=catalogVersion(CatalogVersion.catalog(Catalog.id[default=$contentCatalog]),CatalogVersion.version[default=Staged])[default=$contentCatalog:Staged]
 $wideContent=CMSImageComponent,BannerComponent
 
 # Import config properties into impex macros
 UPDATE GenericItem[processor=de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor];pk[unique=true]
 $jarResourceCms=$config-jarResourceCmsValue
+$emailResource=$config-emailResourceValue
+$emailPackageName=org.questions.facades.process.email.context
 
 # Email page Template
 INSERT_UPDATE EmailPageTemplate;$contentCV[unique=true];uid[unique=true];name;active;frontendTemplateName;subject(code);htmlTemplate(code);restrictedPageTypes(code)
+;;QuestionsSendEmailTemplate;Question Email Send;true;QuestionsSendEmail;questionsSendEmailSubject;questionsSendEmailBody;EmailPage
 
 # Templates for CMS Cockpit Page Edit
 UPDATE EmailPageTemplate;$contentCV[unique=true];uid[unique=true];velocityTemplate[translator=de.hybris.platform.commerceservices.impex.impl.FileLoaderValueTranslator]
@@ -105,6 +114,12 @@ INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=
 ;TopContent;;$wideContent;
 ;BottomContent;;$wideContent;
 
+INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=true][default='QuestionsSendEmailTemplate'];validComponentTypes(code)
+;SiteLogo;;;logo
+;TopContent;;$wideContent;
+;BottomContent;;$wideContent;
+
+
 # Create Content Slots
 INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];name;active
 ;;EmailTopSlot;Default Email Top Slot;true
@@ -187,15 +202,26 @@ INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];po
 ;;TopContent-QuoteBuyerCancellationEmail;TopContent;;EmailTopSlot;true
 ;;BottomContent-QuoteBuyerCancellationEmail;BottomContent;;EmailBottomSlot;true
 
+INSERT_UPDATE ContentSlotForTemplate;$contentCV[unique=true];uid[unique=true];position[unique=true];pageTemplate(uid,$contentCV)[unique=true][default='QuestionsSendEmailTemplate'];contentSlot(uid,$contentCV)[unique=true];allowOverwrite
+;;SiteLogo-QuoteBuyerCancellationEmail;SiteLogo;;EmailSiteLogoSlot;true
+;;TopContent-QuoteBuyerCancellationEmail;TopContent;;EmailTopSlot;true
+;;BottomContent-QuoteBuyerCancellationEmail;BottomContent;;EmailBottomSlot;true
+
+
 # Email Pages
 INSERT_UPDATE EmailPage;$contentCV[unique=true];uid[unique=true];name;masterTemplate(uid,$contentCV);defaultPage;approvalStatus(code)[default='approved']
-
+;;QuestionsSendEmail;QuestionsSendEmail;QuestionsSendEmailTemplate;true;;
 # CMS components velocity templates
 INSERT_UPDATE RendererTemplate;code[unique=true];contextClass;rendererType(code)[default='velocity']
 
 # Email velocity templates
 INSERT_UPDATE RendererTemplate;code[unique=true];contextClass;rendererType(code)[default='velocity']
+;questionsSendEmailBody;$emailPackageName.QuestionsSendEmailContext
+;questionsSendEmailSubject;$emailPackageName.QuestionsSendEmailContext
 
+UPDATE RendererTemplate;code[unique=true];description[lang=$lang];templateScript[lang=$lang,translator=de.hybris.platform.commerceservices.impex.impl.FileLoaderValueTranslator]
+;questionsSendEmailBody;"Questions Send Email Body";$emailResource/email-questionsSendEmailBody.vm;
+;questionsSendEmailSubject;"Questions Send Email Subject";$emailResource/email-questionsSendEmailSubject.vm;
 # Preview Image for use in the CMS Cockpit
 INSERT_UPDATE Media;$contentCV[unique=true];code[unique=true];mime;realfilename;@media[translator=de.hybris.platform.impex.jalo.media.MediaDataTranslator][forceWrite=true]
 ;;EmailPageModel_preview;text/gif;EmailPageModel_preview.gif;$jarResourceCms/preview-images/EmailPageModel_preview.gif

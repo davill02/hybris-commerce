@@ -1,0 +1,13 @@
+# Macros / Replacement Parameter definitions
+$contentCatalog=__CONTENT_CATALOG_NAME__
+$contentCatalogName=__CONTENT_CATALOG_FULL_NAME__
+$productCatalog=__PRODUCT_CATALOG_NAME__
+$productCatalogName=__PRODUCT_CATALOG_FULL_NAME__
+
+$contentCV=catalogVersion(CatalogVersion.catalog(Catalog.id[default=$contentCatalog]),CatalogVersion.version[default=Staged])[default=$contentCatalog:Staged]
+
+INSERT_UPDATE QuestionsCMSComponent;$contentCV[unique=true];uid[unique=true];name;fontSize;numberOfQuestionsToShow
+;;QuestionCMSComponent;Question Component;16;4;
+
+INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];name;active;cmsComponents(&componentRef)
+                         ;;questionsComponentSlot;Questions Content Slot ;true;QuestionCMSComponent

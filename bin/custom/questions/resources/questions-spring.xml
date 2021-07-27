@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2018 SAP SE or an SAP affiliate company.  All rights reserved.
+
+ This software is the confidential and proprietary information of SAP
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with SAP.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+    <bean id="questionsCoreDataImportedEventListener" parent="abstractCoreDataImportedEventListener">
+        <property name="supportedChannels">
+            <list value-type="de.hybris.platform.commerceservices.enums.SiteChannel">
+                <value>B2C</value>
+                <!--
+                                <value>B2B</value>
+                -->
+            </list>
+        </property>
+        <property name="addonExtensionMetadata">
+            <bean class="de.hybris.platform.addonsupport.data.AddonExtensionMetadata">
+                <property name="suffixChannel" value="false"/>
+                <property name="baseExtensionName" value="questions"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="questionsSampleDataEventListener" parent="abstractGenericAddOnSampleDataEventListener">
+        <property name="extensionName" value="questions"/>
+    </bean>
+
+    <bean id="productWithQuestionsConverter" parent="abstractPopulatingConverter">
+        <property name="targetClass" value="org.questions.data.ProductData"/>
+        <property name="populators">
+            <list>
+                <ref bean="productWithQuestionsPopulator"/>
+            </list>
+        </property>
+    </bean>
+
+    <alias name="defaultProductWithQuestionsPopulator" alias="productWithQuestionsPopulator"/>
+    <bean id="defaultProductWithQuestionsPopulator" class="org.questions.populators.ProductWithQuestionsPopulator">
+        <property name="questionDataConverter" ref="questionDataConverter"/>
+    </bean>
+
+    <bean id="questionDataConverter" parent="abstractPopulatingConverter">
+        <property name="targetClass" value="org.questions.data.QuestionData"/>
+        <property name="populators">
+            <list>
+                <ref bean="questionDataPopulator"/>
+            </list>
+        </property>
+    </bean>
+
+    <alias name="defaultQuestionDataPopulator" alias="questionDataPopulator"/>
+    <bean id="defaultQuestionDataPopulator" class="org.questions.populators.QuestionDataPopulator"/>
+
+    <alias name="defaultProductWithQuestionsFacade" alias="productWithQuestionsFacade"/>
+    <bean id="defaultProductWithQuestionsFacade" class="org.questions.facades.DefaultProductWithQuestionsFacade"/>
+
+    <bean id="productQuestionCountProvider" class="org.questions.search.solrfacetsearch.provider.impl.ProductQuestionCountProvider"
+          parent="abstractPropertyFieldValueProvider">
+        <property name="fieldNameProvider" ref="solrFieldNameProvider"/>
+    </bean>
+
+    <bean id="productQuestionCountPopulator" class="org.questions.populators.ProductQuestionCountPopulator"/>
+
+    <bean id="searchResultProductQuestionCountPopulator" class="org.questions.populators.SearchResultProductQuestionCountPopulator"/>
+
+    <bean parent="modifyPopulatorList">
+        <property name="list" ref="productConverter"/>
+        <property name="add"  ref="productQuestionCountPopulator"/>
+    </bean>
+
+    <bean parent="modifyPopulatorList">
+        <property name="list" ref="commerceSearchResultProductConverter"/>
+        <property name="add"  ref="searchResultProductQuestionCountPopulator"/>
+    </bean>
+
+    <bean id="questionCountValueResolver" class="org.questions.search.solrfacetsearch.resolver.impl.QuestionCountValueResolver"/>
+
+    <bean id="internalCustomerAttributeHandler" class="org.questions.dynamicattribute.handlers.InternalCustomerDynamicAttributeHandler"/>
+
+    <bean id="internalCustomerPrepareInterceptor" class="org.questions.interceptors.AddToInternalGroupPrepareInterceptor">
+        <property name="userGroupDao" ref="userGroupDao"/>
+    </bean>
+
+    <bean id="internalCustomersPrepareInterceptorMapping" class="de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping">
+        <property name="interceptor" ref="internalCustomerPrepareInterceptor"/>
+        <property name="typeCode" value="Customer"/>
+    </bean>
+
+    <bean id="questionCustomSetup" class="org.questions.setup.QuestionsCustomSetup">
+        <property name="importService" ref="importService"/>
+     </bean>
+
+    <alias name="defaultQuestionDao" alias="questionDao"/>
+    <bean id="defaultQuestionDao" class="org.questions.dao.impl.DefaultQuestionDao"/>
+
+    <alias name="defaultQuestionService" alias="questionService"/>
+    <bean id="defaultQuestionService" class="org.questions.service.impl.DefaultQuestionService"/>
+
+    <alias name="defaultQuestionFacade" alias="questionFacade"/>
+    <bean id="defaultQuestionFacade" class="org.questions.facades.DefaultQuestionFacade"/>
+
+    <bean id="sendEmailWithQuestionsJob" class="org.questions.servicejobs.SendEmailWithQuestionsJob" parent="abstractJobPerformable" />
+
+    <import resource="/questions/process/send-question-email-process-spring.xml"/>
+
+    <bean id="emailQuestionSendingProcessDefinitionResource" class="de.hybris.platform.processengine.definition.ProcessDefinitionResource" >
+        <property name="resource" value="classpath:/questions/process/send-question-email-process.xml"/>
+    </bean>
+
+    <bean id="questionsSendEmailContext" class="org.questions.facades.process.email.context.QuestionsSendEmailContext" parent="abstractEmailContext" scope="prototype"/>
+
+    <bean id="generateQuestionsSendEmail" parent="abstractGenerateEmailAction">
+        <property name="frontendTemplateName" value="QuestionsSendEmailTemplate"/>
+    </bean>
+
+</beans>

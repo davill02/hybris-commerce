@@ -31,5 +31,6 @@
 	@IMPORT url("${commonResourcePath}/blueprint/print.css");
 </style>
  --%>
-
+<%-- google webfonts --%>
+<link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 <cms:previewCSS cmsPageRequestContextData="${cmsPageRequestContextData}" />

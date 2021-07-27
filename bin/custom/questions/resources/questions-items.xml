@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2018 SAP SE or an SAP affiliate company.  All rights reserved.
+
+ This software is the confidential and proprietary information of SAP
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with SAP.
+-->
+<!--
+	ATTENTION: This is just an example file. You have to edit it according to your needs.
+-->
+
+<items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="items.xsd">
+
+    <relations>
+        <relation code="Product2Question" localized="false">
+            <sourceElement type="Product" cardinality="one" qualifier="product">
+                <modifiers read="true" write="true" search="true" optional="false"/>
+            </sourceElement>
+            <targetElement type="Question" cardinality="many" qualifier="questions" ordered="false">
+                <modifiers read="true" write="true" search="true" optional="true" partof="true"/>
+            </targetElement>
+        </relation>
+    </relations>
+
+    <itemtypes>
+
+        <itemtype code="Question" autocreate="true" generate="true">
+            <deployment table="Questions" typecode="30274"/>
+            <attributes>
+                <attribute qualifier="code" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers unique="true"/>
+                </attribute>
+                <attribute qualifier="question" type="java.lang.String">
+                    <persistence type="property"/>
+                </attribute>
+                <attribute qualifier="answer" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="true"/>
+                </attribute>
+                <attribute qualifier="questionCustomer" type="Customer">
+                    <persistence type="property"/>
+                    <modifiers optional="false"/>
+                </attribute>
+                <attribute qualifier="answerCustomer" type="Customer">
+                    <persistence type="property"/>
+                    <modifiers optional="true"/>
+                </attribute>
+            </attributes>
+        </itemtype>
+
+        <itemtype code="QuestionsCMSComponent" generate="true"
+                  extends="AbstractCMSComponent" abstract="false"
+                  jaloclass="org.questions.jalo.components.QuestionsCMSComponent">
+            <description>It shows customer questions about product.</description>
+            <attributes>
+                <attribute qualifier="numberOfQuestionsToShow" type="java.lang.Integer">
+                    <persistence type="property"/>
+                    <modifiers optional="false"/>
+                    <defaultvalue>3</defaultvalue>
+                </attribute>
+                <attribute qualifier="fontSize" type="java.lang.Integer">
+                    <persistence type="property"/>
+                    <modifiers optional="false"/>
+                    <defaultvalue>14</defaultvalue>
+                </attribute>
+            </attributes>
+        </itemtype>
+
+        <itemtype code="Customer" generate="false" autocreate="false">
+            <attributes>
+                <attribute qualifier="internal" type="java.lang.Boolean">
+                    <defaultvalue>Boolean.FALSE</defaultvalue>
+                    <persistence type="dynamic" attributeHandler="internalCustomerAttributeHandler"/>
+                    <modifiers read="true" write="false"/>
+                </attribute>
+            </attributes>
+        </itemtype>
+
+        <itemtype code="SendEmailWithNewQuestionsCronJob" autocreate="true" generate="true" extends="CronJob">
+            <attributes>
+                <attribute qualifier="lastExecutionTime" type="java.util.Date">
+                    <persistence type="property"/>
+                    <modifiers write="true" read="true" optional="false"/>
+                    <defaultvalue>new java.util.Date(0)</defaultvalue>
+                </attribute>
+                <attribute qualifier="baseSite" type="BaseSite">
+                    <persistence type="property"/>
+                </attribute>
+                <attribute qualifier="email" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers read="true" write="true"/>
+                </attribute>
+            </attributes>
+        </itemtype>
+
+        <itemtype code="SendQuestionEmailProcess" generate="true"
+                  jaloclass="org.questions.processengine.SendQuestionEmailProcess" autocreate="true"
+                  extends="StoreFrontCustomerProcess">
+            <attributes>
+                <attribute qualifier="email" type="java.lang.String">
+                    <persistence type="property"/>
+                </attribute>
+                <attribute qualifier="dateBound" type="java.util.Date">
+                    <persistence type="property"/>
+                </attribute>
+            </attributes>
+        </itemtype>
+
+    </itemtypes>
+</items>
